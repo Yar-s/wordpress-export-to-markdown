@@ -3,6 +3,7 @@ const fs = require('fs');
 const luxon = require('luxon');
 const path = require('path');
 const requestPromiseNative = require('request-promise-native');
+const YAML = require('yaml');
 
 const shared = require('./shared');
 const settings = require('./settings');
@@ -56,11 +57,7 @@ async function writeMarkdownFilesPromise(posts, config ) {
 
 async function loadMarkdownFilePromise(post) {
 	let output = '---\n';
-	Object.entries(post.frontmatter).forEach(pair => {
-		const key = pair[0];
-		const value = (pair[1] || '').replace(/"/g, '\\"');
-		output += key + ': "' + value + '"\n';
-	});
+	output += YAML.stringify(post.frontmatter);
 	output += '---\n\n' + post.content + '\n';
 	return output;
 }

@@ -48,7 +48,16 @@ function collectPosts(data, config) {
 			},
 			frontmatter: {
 				title: getPostTitle(post),
-				date: getPostDate(post)
+				date: getPostDate(post),
+				slug: getPostSlug(post),
+				link: getLink(post),
+				creator: getCreator(post),
+				description: getDescription(post),
+				commentStatus: getCommentStatus(post),
+				pingStatus: getPingStatus(post),
+				isSticky: isSticky(post),
+				categories: getCategories(post),
+				tags: getTags(post),
 			},
 			content: translator.getPostContent(post, turndownService, config)
 		}));
@@ -81,6 +90,44 @@ function getPostTitle(post) {
 
 function getPostDate(post) {
 	return luxon.DateTime.fromRFC2822(post.pubDate[0], { zone: 'utc' }).toISODate();
+}
+
+function getLink(post) {
+	return post.link[0];
+}
+
+function getCreator(post) {
+	return post.creator[0];
+}
+
+function getDescription(post) {
+	return post.description[0];
+}
+
+function getCommentStatus(post) {
+	return post['comment_status'][0];
+}
+
+function getPingStatus(post) {
+	return post['ping_status'][0];
+}
+
+function isSticky(post) {
+	return post['is_sticky'][0];
+}
+
+function getCategories(post) {
+	if (!post.category) {
+		return [];
+	}
+	return post.category.filter(c => c['$'].domain === 'category').map(c => c['_']);
+}
+
+function getTags(post) {
+	if (!post.tags) {
+		return [];
+	}
+	return post.category.filter(c => c['$'].domain === 'post_tag').map(c => c['_']);
 }
 
 function collectAttachedImages(data) {

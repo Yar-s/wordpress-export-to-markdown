@@ -14,31 +14,15 @@ You'll need:
 
 It is recommended that you drop your WordPress export file into the same directory that you run this script from so it's easy to find.
 
-You can run this script immediately in your terminal with `npx`:
-
-```
-npx wordpress-export-to-markdown
-```
-
-Or you can clone and run (this makes repeated runs faster and allows you to tinker with the code). After cloning this repo, open your terminal to the package's directory and run:
+You can clone repo and run (this makes repeated runs faster and allows you to tinker with the code). After cloning this repo, open your terminal to the package's directory and run:
 
 ```
 npm install && node index.js
 ```
 
-Either way you run it, the script will start the wizard. Answer the questions and off you go!
-
 ## Command Line
 
 The wizard makes it easy to configure your options, but you can also do so via the command line if you want. For example, the following will give you [Jekyll](https://jekyllrb.com/)-style output in terms of folder structure and filenames.
-
-Using `npx`:
-
-```
-npx wordpress-export-to-markdown --post-folders=false --prefix-date=true
-```
-
-Using a locally cloned repo:
 
 ```
 node index.js --post-folders=false --prefix-date=true

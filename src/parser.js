@@ -20,7 +20,7 @@ async function parseFilePromise(config) {
 		images.push(...collectAttachedImages(data));
 	}
 	if (config.saveScrapedImages) {
-		images.push(...collectScrapedImages(data));
+		images.push(...collectScrapedImages(data, config));
 	}
 
 	mergeImagesIntoPosts(images, posts);
@@ -28,15 +28,16 @@ async function parseFilePromise(config) {
 	return posts;
 }
 
-function getItemsOfType(data, type) {
-	return data.rss.channel[0].item.filter(item => item.post_type[0] === type);
+function getItemsOfTypes(data, ...types) {
+	return data.rss.channel[0].item.filter(item => types.includes(item.post_type[0]));
 }
 
 function collectPosts(data, config) {
 	// this is passed into getPostContent() for the markdown conversion
 	const turndownService = translator.initTurndownService();
 
-	const posts = getItemsOfType(data, 'post')
+	const types = config.postTypes.split(',');
+	const posts = getItemsOfTypes(data, ...types)
 		.filter(post => post.status[0] !== 'trash' && post.status[0] !== 'draft')
 		.map(post => ({
 			// meta data isn't written to file, but is used to help with other things
@@ -44,7 +45,8 @@ function collectPosts(data, config) {
 				id: getPostId(post),
 				slug: getPostSlug(post),
 				coverImageId: getPostCoverImageId(post),
-				imageUrls: []
+				imageUrls: [],
+				type: getPostType(post),
 			},
 			frontmatter: {
 				title: getPostTitle(post),
@@ -82,6 +84,10 @@ function getPostCoverImageId(post) {
 	const postmeta = post.postmeta.find(postmeta => postmeta.meta_key[0] === '_thumbnail_id');
 	const id = postmeta ? postmeta.meta_value[0] : undefined;
 	return id;
+}
+
+function getPostType(post) {
+	return post.post_type[0];
 }
 
 function getPostTitle(post) {
@@ -131,7 +137,7 @@ function getTags(post) {
 }
 
 function collectAttachedImages(data) {
-	const images = getItemsOfType(data, 'attachment')
+	const images = getItemsOfTypes(data, 'attachment')
 		// filter to certain image file types
 		.filter(attachment => (/\.(gif|jpe?g|png)$/i).test(attachment.attachment_url[0]))
 		.map(attachment => ({
@@ -144,9 +150,10 @@ function collectAttachedImages(data) {
 	return images;
 }
 
-function collectScrapedImages(data) {
+function collectScrapedImages(data, config) {
 	const images = [];
-	getItemsOfType(data, 'post').forEach(post => {
+	const types = config.postTypes.split(',');
+	getItemsOfTypes(data, ...types).forEach(post => {
 		const postId = post.post_id[0];
 		const postContent = post.encoded[0];
 		const postLink = post.link[0];

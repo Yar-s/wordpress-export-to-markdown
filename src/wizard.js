@@ -3,7 +3,6 @@ const commander = require('commander');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const path = require('path');
-const process = require('process');
 
 const package = require('../package.json');
 
@@ -27,6 +26,12 @@ const options = [
 		type: 'folder',
 		description: 'Path to output folder',
 		default: 'output'
+	},
+	{
+		name: 'post-types',
+		type: 'input',
+		description: 'Enter comma-separated post type(s), e.g. post,news',
+		default: 'post'
 	},
 	{
 		name: 'year-folders',

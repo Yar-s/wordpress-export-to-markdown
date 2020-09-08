@@ -72,6 +72,14 @@ The path to the WordPress export file that you want to parse. It is recommended 
 
 The path to the output directory where Markdown and image files will be saved. If it does not exist, it will be created for you.
 
+### Enter comma-separated post type(s), e.g. post,news?
+
+- Argument: `--post-types`
+- Type: `input` (a string)
+- Default: `post`
+
+Comma-separated names of required post types. If there are more than one, a folder for each of them will be created in the output folder.
+
 ### Create year folders?
 
 - Argument: `--year-folders`

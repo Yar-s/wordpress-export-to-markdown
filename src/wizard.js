@@ -172,7 +172,7 @@ function parseCommandLine(argv) {
 			// commander only calls coerce when an input is provided on the command line, which
 			// makes for an easy way to flag (for later) if it should be excluded from the wizard
 			input.isProvided = true;
-			return input.coerce(value);
+			return input.coerce ? input.coerce(value) : value;
 		};
 		commander.option(flag, input.description, coerce, input.default);
 	});
